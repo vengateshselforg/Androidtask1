@@ -16,6 +16,10 @@ public interface ListingContractor {
         void setEmptyState();
 
         void setErrorState(int errorStateType);
+
+        void showProgress();
+
+        void hideProgress();
     }
 
     interface ListingPresenter extends BasePresenter {

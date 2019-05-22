@@ -11,6 +11,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,7 @@ public class ImageListFragment extends Fragment implements ListingContractor.Lis
     private String tabType;
 
     private RecyclerView imageRecyclerView;
+    private ProgressBar progressBar;
 
     private ImageListAdapter imageListAdapter;
     private ListingContractor.ListingPresenter listingPresenter;
@@ -71,6 +73,8 @@ public class ImageListFragment extends Fragment implements ListingContractor.Lis
 
         // Create presenter instance
         listingPresenter = new ListingPresenter(this);
+        setUpUI(view);
+        setUpRecyclerView();
 
         if (tabType != null && !tabType.isEmpty()) {
             if (tabType.equalsIgnoreCase("home")) {
@@ -82,16 +86,13 @@ public class ImageListFragment extends Fragment implements ListingContractor.Lis
             // If condition failed do home tab action
             getImagesForHomeTab();
         }
-
-
-        setUpUI(view);
-        setUpRecyclerView();
     }
 
     /**
      * This function fetches images from server
      */
     private void getImagesForHomeTab() {
+        showProgress();
         listingPresenter.requestWallpaperList();
     }
 
@@ -101,6 +102,7 @@ public class ImageListFragment extends Fragment implements ListingContractor.Lis
 
     private void setUpUI(View view) {
         imageRecyclerView = view.findViewById(R.id.ilf_rv_imagelist);
+        progressBar = view.findViewById(R.id.ilf_pb_progress);
     }
 
     private void setUpRecyclerView() {
@@ -112,6 +114,7 @@ public class ImageListFragment extends Fragment implements ListingContractor.Lis
 
     @Override
     public void loadWallpaperListing(List<Record> records) {
+        hideProgress();
         if (imageListAdapter != null) {
             imageListAdapter.setSource(records);
             imageListAdapter.notifyDataSetChanged();
@@ -120,12 +123,26 @@ public class ImageListFragment extends Fragment implements ListingContractor.Lis
 
     @Override
     public void setEmptyState() {
-
+        hideProgress();
     }
 
     @Override
     public void setErrorState(int errorStateType) {
+        hideProgress();
+    }
 
+    @Override
+    public void showProgress() {
+        if (progressBar != null) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void hideProgress() {
+        if (progressBar != null) {
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     @Override
