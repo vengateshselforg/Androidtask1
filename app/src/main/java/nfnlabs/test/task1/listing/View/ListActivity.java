@@ -1,65 +1,82 @@
 package nfnlabs.test.task1.listing.View;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.view.MenuItem;
+import android.widget.FrameLayout;
 
 import nfnlabs.test.task1.R;
-import nfnlabs.test.task1.listing.ListingContractor;
-import nfnlabs.test.task1.listing.ListingPresenter;
-import nfnlabs.test.task1.model.Record;
+import nfnlabs.test.task1.base.BaseActivity;
 
-public class ListActivity extends AppCompatActivity implements ListingContractor.ListingView {
-    RecyclerView imageRecyclerView;
-    ImageListAdapter imageListAdapter;
+public class ListActivity extends BaseActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "ListActivity";
-    ListingContractor.ListingPresenter listingPresenter;
+
+    private static final String HOME_TAG_FRAGMENT = "home_tab_fragment";
+    private static final String FAVOURITES_TAG_FRAGMENT = "favourites_tab_fragment";
+
+    private FrameLayout fragment_holder_layout;
+    private BottomNavigationView bottom_nav_tab_view;
+
+    private ImageListFragment homeFragment;
+    private ImageListFragment favouritesFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        listingPresenter = new ListingPresenter(this);
+
         setUpUi();
-        setUpRecyclerView();
-        listingPresenter.requestWallpaperList();
+        loadFavouritesFragment();
+        loadHomeFragment();
     }
+
+    private void loadHomeFragment() {
+        homeFragment = ImageListFragment.newInstance("home");
+        if (getSupportFragmentManager() != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.ma_fragment_holder, homeFragment, HOME_TAG_FRAGMENT)
+                    .commit();
+        }
+    }
+
+    private void loadFavouritesFragment() {
+        favouritesFragment = ImageListFragment.newInstance("favourites");
+        if (getSupportFragmentManager() != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.ma_fragment_holder, favouritesFragment, FAVOURITES_TAG_FRAGMENT)
+                    .hide(favouritesFragment)
+                    .commit();
+        }
+    }
+
     /**
      * Initialize all UI components here
      */
     private void setUpUi() {
-        imageRecyclerView = findViewById(R.id.ma_rv_imagelist);
-    }
+        fragment_holder_layout = findViewById(R.id.ma_fragment_holder);
+        bottom_nav_tab_view = findViewById(R.id.ma_bottom_nav_tab);
 
-    /**
-     * RecyclerView setup goes here
-     */
-    private void setUpRecyclerView() {
-        imageListAdapter = new ImageListAdapter(new ArrayList<>());
-        imageRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL));
-        imageRecyclerView.setAdapter(imageListAdapter);
+        bottom_nav_tab_view.setOnNavigationItemSelectedListener(this);
     }
 
     @Override
-    public void loadWallpaperListing(List<Record> records) {
-        imageListAdapter.source = records;
-        imageListAdapter.notifyDataSetChanged();
-    }
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
-    @Override
-    public void setEmptyState() {
-        // TODO Show Empty state
-        Toast.makeText(this, "No Data Found", Toast.LENGTH_SHORT).show();
-    }
+        switch (menuItem.getItemId()) {
+            case R.id.menu_home:
+                getSupportFragmentManager().beginTransaction()
+                        .hide(favouritesFragment)
+                        .show(homeFragment)
+                        .commit();
+                return true;
 
-    @Override
-    public void setErrorState(int errorStateType) {
-        // TODO Show Error state
-        Toast.makeText(this, "Please try again later", Toast.LENGTH_SHORT).show();
+            case R.id.menu_favourites:
+                getSupportFragmentManager().beginTransaction()
+                        .hide(homeFragment)
+                        .show(favouritesFragment).commit();
+                return true;
+        }
+        return false;
     }
 }

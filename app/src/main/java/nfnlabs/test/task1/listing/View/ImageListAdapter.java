@@ -27,6 +27,10 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListViewHolder> 
         this.source = source;
     }
 
+    public void setSource(List<Record> source) {
+        this.source = source;
+    }
+
     @NonNull
     @Override
     public ImageListViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
