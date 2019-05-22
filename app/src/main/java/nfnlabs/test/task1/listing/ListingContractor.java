@@ -27,7 +27,7 @@ public interface ListingContractor {
 
         void handleResponse(ImageListResponse imageListResponse);
 
-        void apiFailure();
+        void apiFailure(Throwable throwable);
     }
 
     interface ListingInteractor {

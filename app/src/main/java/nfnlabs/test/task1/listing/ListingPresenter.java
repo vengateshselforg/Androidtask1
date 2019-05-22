@@ -1,6 +1,9 @@
 package nfnlabs.test.task1.listing;
 
 import nfnlabs.test.task1.model.ImageListResponse;
+import nfnlabs.test.task1.utils.ErrorUtils;
+
+import static nfnlabs.test.task1.constants.Constants.NO_INTERNET;
 
 /**
  * Created by BalaKrishnan on 15/05/19.
@@ -25,11 +28,13 @@ public class ListingPresenter implements ListingContractor.ListingPresenter {
             listingView.loadWallpaperListing(imageListResponse.getRecords());
         else
             listingView.setEmptyState();
+//        listingView.setEmptyState();
     }
 
     @Override
-    public void apiFailure() {
-        listingView.setErrorState(1);
+    public void apiFailure(Throwable throwable) {
+        int error = ErrorUtils.getError(throwable);
+        listingView.setErrorState(error);
     }
 
     @Override

@@ -6,4 +6,7 @@
     <string name="menu_home">Home</string>
     <string name="menu_favourites">Favourites</string>
     <string name="err_showing_details">Error showing details</string>
+    <string name="no_items_found">No Items found</string>
+    <string name="no_internet_msg">No Internet, Try again</string>
+    <string name="error_occured">Error occured</string>
 </resources>

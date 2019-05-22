@@ -41,7 +41,7 @@ public class ListingInteractor implements ListingContractor.ListingInteractor {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                listingPresenter.apiFailure();
+                listingPresenter.apiFailure(t);
             }
         });
     }

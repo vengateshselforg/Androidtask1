@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,9 @@ import nfnlabs.test.task1.model.Fields;
 import nfnlabs.test.task1.model.Record;
 import nfnlabs.test.task1.utils.ObjectConverterHelper;
 
+import static android.view.View.GONE;
 import static nfnlabs.test.task1.constants.Constants.FIELDS_STR_KEY;
+import static nfnlabs.test.task1.constants.Constants.NO_INTERNET;
 
 public class ImageListFragment extends Fragment implements ListingContractor.ListingView, ImageListItemClickListener {
     private static final String TAG = "ImageListFragment";
@@ -36,6 +39,7 @@ public class ImageListFragment extends Fragment implements ListingContractor.Lis
 
     private RecyclerView imageRecyclerView;
     private ProgressBar progressBar;
+    private TextView stateText;
 
     private ImageListAdapter imageListAdapter;
     private ListingContractor.ListingPresenter listingPresenter;
@@ -103,6 +107,7 @@ public class ImageListFragment extends Fragment implements ListingContractor.Lis
     private void setUpUI(View view) {
         imageRecyclerView = view.findViewById(R.id.ilf_rv_imagelist);
         progressBar = view.findViewById(R.id.ilf_pb_progress);
+        stateText = view.findViewById(R.id.ilf_tv_state);
     }
 
     private void setUpRecyclerView() {
@@ -116,19 +121,37 @@ public class ImageListFragment extends Fragment implements ListingContractor.Lis
     public void loadWallpaperListing(List<Record> records) {
         hideProgress();
         if (imageListAdapter != null) {
+            setNonEmptyStateVisibilities();
             imageListAdapter.setSource(records);
             imageListAdapter.notifyDataSetChanged();
+        } else {
+            setEmptyOrErrorStateVisibilities();
+            if (stateText != null) {
+                stateText.setText(requireActivity().getString(R.string.no_items_found));
+            }
         }
     }
 
     @Override
     public void setEmptyState() {
+        setEmptyOrErrorStateVisibilities();
         hideProgress();
+        if (stateText != null) {
+            stateText.setText(requireActivity().getString(R.string.no_items_found));
+        }
     }
 
     @Override
     public void setErrorState(int errorStateType) {
+        setEmptyOrErrorStateVisibilities();
         hideProgress();
+        if (stateText != null) {
+            if (errorStateType == NO_INTERNET) {
+                stateText.setText(requireActivity().getString(R.string.no_internet_msg));
+            } else {
+                stateText.setText(requireActivity().getString(R.string.error_occured));
+            }
+        }
     }
 
     @Override
@@ -141,8 +164,18 @@ public class ImageListFragment extends Fragment implements ListingContractor.Lis
     @Override
     public void hideProgress() {
         if (progressBar != null) {
-            progressBar.setVisibility(View.GONE);
+            progressBar.setVisibility(GONE);
         }
+    }
+
+    private void setNonEmptyStateVisibilities() {
+        imageRecyclerView.setVisibility(View.VISIBLE);
+        stateText.setVisibility(GONE);
+    }
+
+    private void setEmptyOrErrorStateVisibilities() {
+        imageRecyclerView.setVisibility(GONE);
+        stateText.setVisibility(View.VISIBLE);
     }
 
     @Override
