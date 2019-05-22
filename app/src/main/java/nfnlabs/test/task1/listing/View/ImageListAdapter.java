@@ -13,15 +13,18 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import nfnlabs.test.task1.R;
+import nfnlabs.test.task1.listing.ImageListItemClickListener;
+import nfnlabs.test.task1.model.Fields;
 import nfnlabs.test.task1.model.Record;
 
 /**
  * Created by BalaKrishnan on 12/05/19.
  */
 public class ImageListAdapter extends RecyclerView.Adapter<ImageListViewHolder> {
+    private static final String TAG = "ImageListAdapter";
 
     List<Record> source;
-    private static final String TAG = "ImageListAdapter";
+    private ImageListItemClickListener itemClickListener;
 
     public ImageListAdapter(List<Record> source) {
         this.source = source;
@@ -31,18 +34,20 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListViewHolder> 
         this.source = source;
     }
 
+    public void setItemClickListener(ImageListItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
+
     @NonNull
     @Override
     public ImageListViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        return new ImageListViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_image, viewGroup, false));
+        return new ImageListViewHolder(LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.item_image, viewGroup, false), itemClickListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ImageListViewHolder imageListViewHolder, int i) {
-        Glide.with(imageListViewHolder.itemImageView.getContext())
-                .load(source.get(i).getFields().getUrl())
-                .into(imageListViewHolder.itemImageView);
-        imageListViewHolder.itemName.setText(source.get(i).getFields().getName());
+        imageListViewHolder.setImageItem(source.get(i).getFields());
     }
 
     @Override
@@ -53,12 +58,32 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListViewHolder> 
 }
 
 class ImageListViewHolder extends RecyclerView.ViewHolder {
-    ImageView itemImageView;
-    TextView itemName;
+    private ImageView itemImageView;
+    private TextView itemName;
 
-    public ImageListViewHolder(@NonNull View itemView) {
+    public Fields fields;
+
+    public ImageListViewHolder(@NonNull View itemView, ImageListItemClickListener itemClickListener) {
         super(itemView);
         itemImageView = itemView.findViewById(R.id.ii_iv_image);
         itemName = itemView.findViewById(R.id.ii_tv_name);
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (itemClickListener != null) {
+                    itemClickListener.onImageItemClicked(fields);
+                }
+            }
+        });
+    }
+
+    public void setImageItem(Fields fields) {
+        this.fields = fields;
+
+        Glide.with(itemImageView.getContext())
+                .load(fields.getUrl())
+                .into(itemImageView);
+        itemName.setText(fields.getName());
     }
 }

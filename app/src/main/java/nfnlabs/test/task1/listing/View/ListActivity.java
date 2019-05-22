@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 
 import nfnlabs.test.task1.R;
 import nfnlabs.test.task1.base.BaseActivity;
@@ -15,7 +14,6 @@ public class ListActivity extends BaseActivity implements BottomNavigationView.O
     private static final String HOME_TAG_FRAGMENT = "home_tab_fragment";
     private static final String FAVOURITES_TAG_FRAGMENT = "favourites_tab_fragment";
 
-    private FrameLayout fragment_holder_layout;
     private BottomNavigationView bottom_nav_tab_view;
 
     private ImageListFragment homeFragment;
@@ -54,7 +52,6 @@ public class ListActivity extends BaseActivity implements BottomNavigationView.O
      * Initialize all UI components here
      */
     private void setUpUi() {
-        fragment_holder_layout = findViewById(R.id.ma_fragment_holder);
         bottom_nav_tab_view = findViewById(R.id.ma_bottom_nav_tab);
 
         bottom_nav_tab_view.setOnNavigationItemSelectedListener(this);
@@ -62,7 +59,6 @@ public class ListActivity extends BaseActivity implements BottomNavigationView.O
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-
         switch (menuItem.getItemId()) {
             case R.id.menu_home:
                 getSupportFragmentManager().beginTransaction()

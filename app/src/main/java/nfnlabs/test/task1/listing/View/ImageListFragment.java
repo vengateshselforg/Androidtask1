@@ -1,5 +1,6 @@
 package nfnlabs.test.task1.listing.View;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,11 +16,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nfnlabs.test.task1.R;
+import nfnlabs.test.task1.detail.ImageDetailActivity;
+import nfnlabs.test.task1.listing.ImageListItemClickListener;
 import nfnlabs.test.task1.listing.ListingContractor;
 import nfnlabs.test.task1.listing.ListingPresenter;
+import nfnlabs.test.task1.model.Fields;
 import nfnlabs.test.task1.model.Record;
+import nfnlabs.test.task1.utils.ObjectConverterHelper;
 
-public class ImageListFragment extends Fragment implements ListingContractor.ListingView {
+import static nfnlabs.test.task1.constants.Constants.FIELDS_STR_KEY;
+
+public class ImageListFragment extends Fragment implements ListingContractor.ListingView, ImageListItemClickListener {
     private static final String TAG = "ImageListFragment";
 
     private static final String TAB_TYPE = "tab_type";
@@ -98,6 +105,7 @@ public class ImageListFragment extends Fragment implements ListingContractor.Lis
 
     private void setUpRecyclerView() {
         imageListAdapter = new ImageListAdapter(new ArrayList<>());
+        imageListAdapter.setItemClickListener(this);
         imageRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL));
         imageRecyclerView.setAdapter(imageListAdapter);
     }
@@ -129,5 +137,16 @@ public class ImageListFragment extends Fragment implements ListingContractor.Lis
             listingPresenter.cleanup();
         }
         listingPresenter = null;
+    }
+
+    @Override
+    public void onImageItemClicked(Fields fields) {
+        if (fields != null) {
+            // Convert object to string to pass in intent
+            String fieldsStr = ObjectConverterHelper.getFieldsString(fields);
+            Intent intent = new Intent(requireActivity(), ImageDetailActivity.class);
+            intent.putExtra(FIELDS_STR_KEY, fieldsStr);
+            startActivity(intent);
+        }
     }
 }
