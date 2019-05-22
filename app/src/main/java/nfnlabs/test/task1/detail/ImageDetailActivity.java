@@ -2,6 +2,8 @@ package nfnlabs.test.task1.detail;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,10 +15,11 @@ import nfnlabs.test.task1.utils.ObjectConverterHelper;
 
 import static nfnlabs.test.task1.constants.Constants.FIELDS_STR_KEY;
 
-public class ImageDetailActivity extends BaseActivity {
+public class ImageDetailActivity extends BaseActivity implements View.OnClickListener {
 
     private ImageView wallpaperImageView;
     private TextView titleText, descriptionText;
+    private FloatingActionButton favoriteFabBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,9 @@ public class ImageDetailActivity extends BaseActivity {
         wallpaperImageView = findViewById(R.id.ida_iv_image);
         titleText = findViewById(R.id.ida_tv_title);
         descriptionText = findViewById(R.id.ida_tv_description);
+        favoriteFabBtn = findViewById(R.id.ida_favourite);
+
+        favoriteFabBtn.setOnClickListener(this);
     }
 
     private void setImageDetail(Fields fields) {
@@ -59,5 +65,16 @@ public class ImageDetailActivity extends BaseActivity {
         if (fields.getUrl() != null && !fields.getUrl().isEmpty()) {
             ImageLoaderUtils.loadImage(this, wallpaperImageView, fields.getUrl());
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.ida_favourite) {
+            onFavoriteBtnClicked();
+        }
+    }
+
+    private void onFavoriteBtnClicked() {
+
     }
 }
