@@ -6,4 +6,6 @@
 
     <color name="colorWhite">#FFFFFF</color>
     <color name="color99">#999999</color>
+    <color name="titleTextColor">#153645</color>
+    <color name="descriptionTextColor">#153645</color>
 </resources>
