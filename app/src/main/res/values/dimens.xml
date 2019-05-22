@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="imageSizeHeight">200dp</dimen>
+    <dimen name="imageSizeWidth">150dp</dimen>
+    <dimen name="cardCornerRadius">8dp</dimen>
+    <dimen name="smallMargin">4dp</dimen>
+</resources>
