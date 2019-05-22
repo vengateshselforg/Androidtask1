@@ -8,4 +8,8 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="BottomNavigationTheme" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">@color/colorBottomTabSelected</item>
+        <item name="android:textColorSecondary">@color/colorBottomTabUnSelected</item>
+    </style>
 </resources>
