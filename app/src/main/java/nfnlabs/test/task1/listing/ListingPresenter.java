@@ -1,5 +1,7 @@
 package nfnlabs.test.task1.listing;
 
+import android.content.Context;
+
 import nfnlabs.test.task1.model.ImageListResponse;
 import nfnlabs.test.task1.utils.ErrorUtils;
 
@@ -20,6 +22,11 @@ public class ListingPresenter implements ListingContractor.ListingPresenter {
     @Override
     public void requestWallpaperList() {
         listingInteractor.requestWallpaperList();
+    }
+
+    @Override
+    public void requestFavouriteWallpaperList(Context context) {
+        listingInteractor.requestFavouriteWallpaperList(context);
     }
 
     @Override

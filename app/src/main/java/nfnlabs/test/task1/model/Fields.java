@@ -5,13 +5,20 @@ import com.google.gson.annotations.SerializedName;
 
 @SuppressWarnings("unused")
 public class Fields {
-
+    private String fieldId;
     @SerializedName("description")
     private String mDescription;
     @SerializedName("name")
     private String mName;
     @SerializedName("url")
     private String mUrl;
+
+    public Fields() {
+    }
+
+    public Fields(String fieldId) {
+        this.fieldId = fieldId;
+    }
 
     public String getDescription() {
         return mDescription;
@@ -37,4 +44,15 @@ public class Fields {
         mUrl = url;
     }
 
+    public void setmDescription(String mDescription) {
+        this.mDescription = mDescription;
+    }
+
+    public void setmName(String mName) {
+        this.mName = mName;
+    }
+
+    public void setmUrl(String mUrl) {
+        this.mUrl = mUrl;
+    }
 }

@@ -101,7 +101,8 @@ public class ImageListFragment extends Fragment implements ListingContractor.Lis
     }
 
     private void getImagesForFavouritesTab() {
-
+        showProgress();
+        listingPresenter.requestFavouriteWallpaperList(requireActivity());
     }
 
     private void setUpUI(View view) {

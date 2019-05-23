@@ -1,5 +1,7 @@
 package nfnlabs.test.task1.listing;
 
+import android.content.Context;
+
 import java.util.List;
 
 import nfnlabs.test.task1.base.BasePresenter;
@@ -25,6 +27,8 @@ public interface ListingContractor {
     interface ListingPresenter extends BasePresenter {
         void requestWallpaperList();
 
+        void requestFavouriteWallpaperList(Context context);
+
         void handleResponse(ImageListResponse imageListResponse);
 
         void apiFailure(Throwable throwable);
@@ -32,6 +36,8 @@ public interface ListingContractor {
 
     interface ListingInteractor {
         void requestWallpaperList();
+
+        void requestFavouriteWallpaperList(Context context);
     }
 
 }

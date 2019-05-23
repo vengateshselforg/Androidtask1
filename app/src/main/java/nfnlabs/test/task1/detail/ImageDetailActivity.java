@@ -2,8 +2,6 @@ package nfnlabs.test.task1.detail;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -28,6 +26,7 @@ import java.util.Locale;
 
 import nfnlabs.test.task1.R;
 import nfnlabs.test.task1.base.BaseActivity;
+import nfnlabs.test.task1.db.DBHelper;
 import nfnlabs.test.task1.model.Fields;
 import nfnlabs.test.task1.utils.AppPermissionUtils;
 import nfnlabs.test.task1.utils.ImageLoaderUtils;
@@ -123,7 +122,7 @@ public class ImageDetailActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
-    public static class ImageDownloader extends AsyncTask<String, Integer, String> {
+    public static class ImageDownloader extends AsyncTask<String, Integer, Boolean> {
 
         private WeakReference<ImageDetailActivity> activityWeakRef;
 
@@ -141,8 +140,9 @@ public class ImageDetailActivity extends BaseActivity implements View.OnClickLis
         }
 
         @Override
-        protected String doInBackground(String... urls) {
+        protected Boolean doInBackground(String... urls) {
             int count;
+            boolean isFavourited = false;
             try {
                 URL mUrl = new URL(urls[0]);
                 URLConnection urlConnection = mUrl.openConnection();
@@ -159,7 +159,7 @@ public class ImageDetailActivity extends BaseActivity implements View.OnClickLis
                 }
 
                 InputStream input = new BufferedInputStream(mUrl.openStream());
-                OutputStream output = new FileOutputStream(folder + "/"+imageFileName);
+                OutputStream output = new FileOutputStream(folder + "/" + imageFileName);
                 byte[] data = new byte[1024];
                 long total = 0;
                 while ((count = input.read(data)) != -1) {
@@ -170,14 +170,17 @@ public class ImageDetailActivity extends BaseActivity implements View.OnClickLis
                 output.flush();
                 output.close();
                 input.close();
+
+                isFavourited = DBHelper.getInstance(activityWeakRef.get())
+                        .addFieldsToFavourite(activityWeakRef.get().fields, folder + "/" + imageFileName);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return "";
+            return isFavourited;
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(Boolean result) {
             if (this.activityWeakRef.get() != null) {
                 this.activityWeakRef.get().hideProgress();
             }
