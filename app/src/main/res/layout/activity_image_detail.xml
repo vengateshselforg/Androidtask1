@@ -52,4 +52,6 @@
         app:elevation="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <include layout="@layout/card_view_loader"/>
 </android.support.constraint.ConstraintLayout>

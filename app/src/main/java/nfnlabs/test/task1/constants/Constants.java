@@ -5,4 +5,6 @@ public interface Constants {
 
     int NO_INTERNET = 800;
     int UNKNOWN_ERROR = 801;
+
+    int RC_STORAGE_PERM = 115;
 }
