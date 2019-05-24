@@ -1,5 +1,6 @@
 package nfnlabs.test.task1.listing.View;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -34,8 +35,9 @@ public class ImageListFragment extends Fragment implements ListingContractor.Lis
     private static final String TAG = "ImageListFragment";
 
     private static final String TAB_TYPE = "tab_type";
+    private static final int IMAGE_DETAIL_PAGE = 112;
 
-    private String tabType;
+    private String tabType = "";
 
     private RecyclerView imageRecyclerView;
     private ProgressBar progressBar;
@@ -197,7 +199,26 @@ public class ImageListFragment extends Fragment implements ListingContractor.Lis
             String fieldsStr = ObjectConverterHelper.getFieldsString(fields);
             Intent intent = new Intent(requireActivity(), ImageDetailActivity.class);
             intent.putExtra(FIELDS_STR_KEY, fieldsStr);
-            startActivity(intent);
+            startActivityForResult(intent, IMAGE_DETAIL_PAGE);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode != Activity.RESULT_OK)
+            return;
+        switch (requestCode) {
+            case IMAGE_DETAIL_PAGE:
+                refreshFavouritesPage();
+                break;
+        }
+    }
+
+    private void refreshFavouritesPage() {
+        if (!tabType.isEmpty()) {
+            getImagesForFavouritesTab();
         }
     }
 }

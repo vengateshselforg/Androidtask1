@@ -1,6 +1,7 @@
 package nfnlabs.test.task1.detail;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -136,6 +137,7 @@ public class ImageDetailActivity extends BaseActivity implements View.OnClickLis
                 // Delete file from storage to free up space
                 FileUtils.deleteFile(new File(fields.getUrl()));
                 showToast("Item removed from favourite");
+                setResult(Activity.RESULT_OK);
                 finish();
             } else {
                 showToast("Item cannot be removed from favourite");
@@ -260,6 +262,7 @@ public class ImageDetailActivity extends BaseActivity implements View.OnClickLis
                         this.activityWeakRef.get().favoriteFabBtn.setEnabled(true);
                     }
                 }
+                this.activityWeakRef.get().setResult(Activity.RESULT_OK);
                 this.activityWeakRef.get().finish();
             }
         }
