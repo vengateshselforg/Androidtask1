@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -49,6 +50,7 @@ public class ImageDetailActivity extends BaseActivity implements View.OnClickLis
 
     private Fields fields;
     private ImageDownloader imageDownloader;
+    private long mLastClickTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +98,7 @@ public class ImageDetailActivity extends BaseActivity implements View.OnClickLis
             ImageLoaderUtils.loadImage(this, wallpaperImageView, fields.getUrl());
         }
 
-        if (fields.getIsFavourited()!=null && fields.getIsFavourited() == 1) {
+        if (fields.getIsFavourited() != null && fields.getIsFavourited() == 1) {
             favoriteFabBtn.setImageResource(R.drawable.ic_favorite_filled);
         }
     }
@@ -109,14 +111,24 @@ public class ImageDetailActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void onFavoriteBtnClicked() {
-        if (fields.getIsFavourited()!=null && fields.getIsFavourited() == 1) {
+        favoriteFabBtn.setClickable(false);
+        favoriteFabBtn.setEnabled(false);
+
+        if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
+            return;
+        }
+        mLastClickTime = SystemClock.elapsedRealtime();
+
+        if (fields.getIsFavourited() != null && fields.getIsFavourited() == 1) {
             boolean isDeleted = DBHelper.getInstance(this)
                     .deleteFromFavourite(fields.getFieldId());
             if (isDeleted) {
                 showToast("Item removed from favourite");
                 finish();
-            }else {
+            } else {
                 showToast("Item cannot be removed from favourite");
+                favoriteFabBtn.setClickable(true);
+                favoriteFabBtn.setEnabled(true);
             }
         } else {
             // Check for runtime permissions
@@ -125,9 +137,13 @@ public class ImageDetailActivity extends BaseActivity implements View.OnClickLis
                     onDownloadImage(this, fields.getUrl());
                 } else {
                     showToast("Couldn't favourite item");
+                    favoriteFabBtn.setClickable(true);
+                    favoriteFabBtn.setEnabled(true);
                 }
             } else {
                 showToast("No Internet connection");
+                favoriteFabBtn.setClickable(true);
+                favoriteFabBtn.setEnabled(true);
             }
         }
     }
@@ -144,6 +160,8 @@ public class ImageDetailActivity extends BaseActivity implements View.OnClickLis
                     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                     public void onClick(DialogInterface dialog, int which) {
                         AppPermissionUtils.askStoragePermission(context);
+                        favoriteFabBtn.setEnabled(true);
+                        favoriteFabBtn.setClickable(true);
                     }
                 });
                 AlertDialog dialog = Builder.create();
@@ -225,6 +243,10 @@ public class ImageDetailActivity extends BaseActivity implements View.OnClickLis
                     Toast.makeText(this.activityWeakRef.get(), "Item added to Favourites", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this.activityWeakRef.get(), "Item not added to Favourites", Toast.LENGTH_SHORT).show();
+                    if (this.activityWeakRef.get().favoriteFabBtn != null) {
+                        this.activityWeakRef.get().favoriteFabBtn.setClickable(true);
+                        this.activityWeakRef.get().favoriteFabBtn.setEnabled(true);
+                    }
                 }
                 this.activityWeakRef.get().finish();
             }
