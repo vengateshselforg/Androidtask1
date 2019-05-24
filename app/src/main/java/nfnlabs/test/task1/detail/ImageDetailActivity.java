@@ -1,7 +1,6 @@
 package nfnlabs.test.task1.detail;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,6 +20,8 @@ import android.widget.Toast;
 
 import com.borjabravo.readmoretextview.ReadMoreTextView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -37,6 +38,7 @@ import java.util.Locale;
 import nfnlabs.test.task1.R;
 import nfnlabs.test.task1.base.BaseActivity;
 import nfnlabs.test.task1.db.DBHelper;
+import nfnlabs.test.task1.model.FavouriteEvent;
 import nfnlabs.test.task1.model.Fields;
 import nfnlabs.test.task1.utils.AppPermissionUtils;
 import nfnlabs.test.task1.utils.FileUtils;
@@ -137,7 +139,8 @@ public class ImageDetailActivity extends BaseActivity implements View.OnClickLis
                 // Delete file from storage to free up space
                 FileUtils.deleteFile(new File(fields.getUrl()));
                 showToast("Item removed from favourite");
-                setResult(Activity.RESULT_OK);
+                //setResult(Activity.RESULT_OK);
+                EventBus.getDefault().post(new FavouriteEvent());
                 finish();
             } else {
                 showToast("Item cannot be removed from favourite");
@@ -262,7 +265,8 @@ public class ImageDetailActivity extends BaseActivity implements View.OnClickLis
                         this.activityWeakRef.get().favoriteFabBtn.setEnabled(true);
                     }
                 }
-                this.activityWeakRef.get().setResult(Activity.RESULT_OK);
+                //this.activityWeakRef.get().setResult(Activity.RESULT_OK);
+                EventBus.getDefault().post(new FavouriteEvent());
                 this.activityWeakRef.get().finish();
             }
         }

@@ -5,8 +5,13 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.view.MenuItem;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import nfnlabs.test.task1.R;
 import nfnlabs.test.task1.base.BaseActivity;
+import nfnlabs.test.task1.model.FavouriteEvent;
 
 public class ListActivity extends BaseActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "ListActivity";
@@ -23,6 +28,9 @@ public class ListActivity extends BaseActivity implements BottomNavigationView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Register event bus
+        EventBus.getDefault().register(this);
 
         setUpUi();
         loadFavouritesFragment();
@@ -74,5 +82,19 @@ public class ListActivity extends BaseActivity implements BottomNavigationView.O
                 return true;
         }
         return false;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onFavouriteEvent(FavouriteEvent event) {
+        if (favouritesFragment != null) {
+            favouritesFragment.getImagesForFavouritesTab();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Register event bus
+        EventBus.getDefault().unregister(this);
     }
 }

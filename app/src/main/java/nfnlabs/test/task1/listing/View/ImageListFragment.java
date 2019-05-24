@@ -15,6 +15,10 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +39,7 @@ public class ImageListFragment extends Fragment implements ListingContractor.Lis
     private static final String TAG = "ImageListFragment";
 
     private static final String TAB_TYPE = "tab_type";
-    private static final int IMAGE_DETAIL_PAGE = 112;
+    public static final int IMAGE_DETAIL_PAGE = 112;
 
     private String tabType = "";
 
@@ -61,6 +65,7 @@ public class ImageListFragment extends Fragment implements ListingContractor.Lis
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             tabType = getArguments().getString(TAB_TYPE);
         }
@@ -102,7 +107,7 @@ public class ImageListFragment extends Fragment implements ListingContractor.Lis
         listingPresenter.requestWallpaperList();
     }
 
-    private void getImagesForFavouritesTab() {
+    public void getImagesForFavouritesTab() {
         showProgress();
         listingPresenter.requestFavouriteWallpaperList(requireActivity());
     }
@@ -203,7 +208,7 @@ public class ImageListFragment extends Fragment implements ListingContractor.Lis
         }
     }
 
-    @Override
+    /*@Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -217,8 +222,15 @@ public class ImageListFragment extends Fragment implements ListingContractor.Lis
     }
 
     private void refreshFavouritesPage() {
-        if (!tabType.isEmpty()) {
-            getImagesForFavouritesTab();
+        if (!tabType.isEmpty() && tabType.equalsIgnoreCase("home")) {
+            //getImagesForFavouritesTab();
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // Unregister event bus
+        EventBus.getDefault().unregister(this);
+    }*/
 }
