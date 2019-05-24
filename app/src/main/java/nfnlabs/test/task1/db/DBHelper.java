@@ -34,6 +34,7 @@ public class DBHelper {
         values.put("title", fields.getName());
         values.put("description", fields.getDescription());
         values.put("image_url", imageUrl);
+        values.put("is_favourited", 1);
 
         SQLiteDatabase db = geDBInstance().getWritableDatabase();
         boolean createSuccessful = db.insert("fields", null, values) > 0;
@@ -58,11 +59,14 @@ public class DBHelper {
                 String title = cursor.getString(cursor.getColumnIndex("title"));
                 String description = cursor.getString(cursor.getColumnIndex("description"));
                 String imageUrl = cursor.getString(cursor.getColumnIndex("image_url"));
+                Integer isFavourited = cursor.getInt(cursor.getColumnIndex("is_favourited"));
 
                 Fields fields = new Fields();
+                fields.setFieldId(id);
                 fields.setmName(title);
                 fields.setmDescription(description);
                 fields.setmUrl(imageUrl);
+                fields.setIsFavourited(isFavourited);
                 favouritesList.add(fields);
 
             } while (cursor.moveToNext());
@@ -72,5 +76,10 @@ public class DBHelper {
         db.close();
 
         return favouritesList;
+    }
+
+    public boolean deleteFromFavourite(Integer fieldId) {
+        SQLiteDatabase db = geDBInstance().getWritableDatabase();
+        return db.delete("fields", "id ='" + fieldId + "'", null) > 0;
     }
 }

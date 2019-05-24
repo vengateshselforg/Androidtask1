@@ -1,15 +1,20 @@
 package nfnlabs.test.task1.detail;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -90,6 +95,10 @@ public class ImageDetailActivity extends BaseActivity implements View.OnClickLis
         if (fields.getUrl() != null && !fields.getUrl().isEmpty()) {
             ImageLoaderUtils.loadImage(this, wallpaperImageView, fields.getUrl());
         }
+
+        if (fields.getIsFavourited()!=null && fields.getIsFavourited() == 1) {
+            favoriteFabBtn.setImageResource(R.drawable.ic_favorite_filled);
+        }
     }
 
     @Override
@@ -100,22 +109,46 @@ public class ImageDetailActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void onFavoriteBtnClicked() {
-        // Check for runtime permissions
-
-        if (NetworkUtils.isNetworkConnected(this)) {
-            if (fields != null && fields.getUrl() != null && !fields.getUrl().isEmpty()) {
-                onDownloadImage(this, fields.getUrl());
-            } else {
-
+        if (fields.getIsFavourited()!=null && fields.getIsFavourited() == 1) {
+            boolean isDeleted = DBHelper.getInstance(this)
+                    .deleteFromFavourite(fields.getFieldId());
+            if (isDeleted) {
+                showToast("Item removed from favourite");
+                finish();
+            }else {
+                showToast("Item cannot be removed from favourite");
             }
         } else {
-
+            // Check for runtime permissions
+            if (NetworkUtils.isNetworkConnected(this)) {
+                if (fields != null && fields.getUrl() != null && !fields.getUrl().isEmpty()) {
+                    onDownloadImage(this, fields.getUrl());
+                } else {
+                    showToast("Couldn't favourite item");
+                }
+            } else {
+                showToast("No Internet connection");
+            }
         }
     }
 
     private void onDownloadImage(Context context, String url) {
         if (!AppPermissionUtils.checkStoragePermission(context)) {
-            AppPermissionUtils.askStoragePermission(context);
+            if (!isFinishing()) {
+                AlertDialog.Builder Builder = new AlertDialog.Builder(this);
+                Builder.setCancelable(false);
+                Builder.setTitle("Required Storage Permission?");
+                Builder.setMessage("We need storage permission to save the downloaded image." +
+                        "Please click OK in the following screen");
+                Builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                    public void onClick(DialogInterface dialog, int which) {
+                        AppPermissionUtils.askStoragePermission(context);
+                    }
+                });
+                AlertDialog dialog = Builder.create();
+                dialog.show();
+            }
         } else {
             imageDownloader = new ImageDownloader(this);
             imageDownloader.execute(url);
@@ -151,6 +184,11 @@ public class ImageDetailActivity extends BaseActivity implements View.OnClickLis
 
                 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
                 String imageFileName = String.format("JPEG_%s.jpg", timeStamp);
+                if (activityWeakRef.get().fields.getName() != null
+                        && !activityWeakRef.get().fields.getName().isEmpty()) {
+                    imageFileName = String.format(activityWeakRef.get().fields.getName()
+                            + "JPEG_%s.jpg", timeStamp);
+                }
                 String folder = Environment.getExternalStorageDirectory() +
                         File.separator + "Task1";
                 File directory = new File(folder);
@@ -183,6 +221,12 @@ public class ImageDetailActivity extends BaseActivity implements View.OnClickLis
         protected void onPostExecute(Boolean result) {
             if (this.activityWeakRef.get() != null) {
                 this.activityWeakRef.get().hideProgress();
+                if (result) {
+                    Toast.makeText(this.activityWeakRef.get(), "Item added to Favourites", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this.activityWeakRef.get(), "Item not added to Favourites", Toast.LENGTH_SHORT).show();
+                }
+                this.activityWeakRef.get().finish();
             }
         }
     }
@@ -191,14 +235,38 @@ public class ImageDetailActivity extends BaseActivity implements View.OnClickLis
     protected void onDestroy() {
         super.onDestroy();
 
-        if (imageDownloader != null) {
-            imageDownloader.cancel(true);
-        }
+        cancelFileDownload();
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+
+        if (!isFinishing() && imageDownloader != null) {
+            // If user presses back button
+            AlertDialog.Builder Builder = new AlertDialog.Builder(this);
+            Builder.setCancelable(false);
+            Builder.setTitle("Exit?");
+            Builder.setMessage("If you exit the page your download will be cancelled and item won't be" +
+                    "added to favourites!");
+            Builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                public void onClick(DialogInterface dialog, int which) {
+                    cancelFileDownload();
+                    dialog.dismiss();
+                    finish();
+                }
+            });
+            Builder.setNegativeButton("CLOSE", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog dialog = Builder.create();
+            dialog.show();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     public void showProgress() {
@@ -210,6 +278,12 @@ public class ImageDetailActivity extends BaseActivity implements View.OnClickLis
     public void hideProgress() {
         if (flProgress != null) {
             flProgress.setVisibility(View.GONE);
+        }
+    }
+
+    private void cancelFileDownload() {
+        if (imageDownloader != null) {
+            imageDownloader.cancel(true);
         }
     }
 }

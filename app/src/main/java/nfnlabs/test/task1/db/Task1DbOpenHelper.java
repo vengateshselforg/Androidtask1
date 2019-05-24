@@ -20,7 +20,8 @@ public class Task1DbOpenHelper extends SQLiteOpenHelper {
                 "( id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "title TEXT, " +
                 "description TEXT, " +
-                "image_url TEXT) ";
+                "image_url TEXT, "+
+                "is_favourited INTEGER DEFAULT 0 ) ";
 
         db.execSQL(createTableCmd);
     }

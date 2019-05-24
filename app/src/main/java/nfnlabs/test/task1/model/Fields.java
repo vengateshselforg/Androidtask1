@@ -5,18 +5,27 @@ import com.google.gson.annotations.SerializedName;
 
 @SuppressWarnings("unused")
 public class Fields {
-    private String fieldId;
+    private Integer fieldId;
     @SerializedName("description")
     private String mDescription;
     @SerializedName("name")
     private String mName;
     @SerializedName("url")
     private String mUrl;
+    private Integer isFavourited;
 
     public Fields() {
     }
 
-    public Fields(String fieldId) {
+    public void setFieldId(Integer fieldId) {
+        this.fieldId = fieldId;
+    }
+
+    public Integer getFieldId() {
+        return fieldId;
+    }
+
+    public Fields(Integer fieldId) {
         this.fieldId = fieldId;
     }
 
@@ -54,5 +63,13 @@ public class Fields {
 
     public void setmUrl(String mUrl) {
         this.mUrl = mUrl;
+    }
+
+    public Integer getIsFavourited() {
+        return isFavourited;
+    }
+
+    public void setIsFavourited(Integer isFavourited) {
+        this.isFavourited = isFavourited;
     }
 }
