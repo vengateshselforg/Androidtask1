@@ -37,6 +37,7 @@ import nfnlabs.test.task1.base.BaseActivity;
 import nfnlabs.test.task1.db.DBHelper;
 import nfnlabs.test.task1.model.Fields;
 import nfnlabs.test.task1.utils.AppPermissionUtils;
+import nfnlabs.test.task1.utils.FileUtils;
 import nfnlabs.test.task1.utils.ImageLoaderUtils;
 import nfnlabs.test.task1.utils.NetworkUtils;
 import nfnlabs.test.task1.utils.ObjectConverterHelper;
@@ -126,6 +127,8 @@ public class ImageDetailActivity extends BaseActivity implements View.OnClickLis
             boolean isDeleted = DBHelper.getInstance(this)
                     .deleteFromFavourite(fields.getFieldId());
             if (isDeleted) {
+                // Delete file from storage to free up space
+                FileUtils.deleteFile(new File(fields.getUrl()));
                 showToast("Item removed from favourite");
                 finish();
             } else {
