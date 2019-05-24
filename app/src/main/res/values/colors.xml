@@ -11,4 +11,5 @@
     <color name="colorBottomTabSelected">#ED6240</color>
     <color name="colorBottomTabUnSelected">#153645</color>
     <color name="stateBgColor">#323232</color>
+    <color name="clickableTextColor">#EB3448</color>
 </resources>

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -96,6 +97,11 @@ public class ImageDetailActivity extends BaseActivity implements View.OnClickLis
             titleText.setText(fields.getName());
         }
         if (fields.getDescription() != null && !fields.getDescription().isEmpty()) {
+            try {
+                descriptionText.setTypeface(ResourcesCompat.getFont(this, R.font.source_sans_pro_light));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             descriptionText.setText(fields.getDescription());
         }
         if (fields.getUrl() != null && !fields.getUrl().isEmpty()) {
