@@ -27,7 +27,7 @@
             android:textColor="@color/titleTextColor"
             android:textSize="18sp" />
 
-        <TextView
+        <!--<TextView
             android:id="@+id/ida_tv_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,7 +36,22 @@
             android:layout_marginEnd="16dp"
             android:fontFamily="@font/source_sans_pro_light"
             android:textColor="@color/titleTextColor"
-            android:textSize="14sp" />
+            android:textSize="14sp" />-->
+
+        <com.borjabravo.readmoretextview.ReadMoreTextView
+            android:id="@+id/ida_tv_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="@font/source_sans_pro_light"
+            android:textColor="@color/titleTextColor"
+            android:textSize="14sp"
+            app:trimCollapsedText="@string/readMore"
+            app:trimExpandedText="@string/readLess"
+            app:trimMode="trimModeLine"
+            app:trimLines="5"/>
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
@@ -53,5 +68,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <include layout="@layout/card_view_loader"/>
+    <include layout="@layout/card_view_loader" />
 </android.support.constraint.ConstraintLayout>

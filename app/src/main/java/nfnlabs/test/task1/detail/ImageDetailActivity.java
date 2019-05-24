@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.borjabravo.readmoretextview.ReadMoreTextView;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -44,7 +46,8 @@ import static nfnlabs.test.task1.constants.Constants.FIELDS_STR_KEY;
 public class ImageDetailActivity extends BaseActivity implements View.OnClickListener {
 
     private ImageView wallpaperImageView;
-    private TextView titleText, descriptionText;
+    private TextView titleText/*,descriptionText*/;
+    private ReadMoreTextView descriptionText;
     private FloatingActionButton favoriteFabBtn;
     private FrameLayout flProgress;
 

@@ -9,4 +9,7 @@
     <string name="no_items_found">No Items found</string>
     <string name="no_internet_msg">No Internet, Try again</string>
     <string name="error_occured">Error occured</string>
+
+    <string name="readMore">Read More…</string>
+    <string name="readLess">Read Less…</string>
 </resources>
